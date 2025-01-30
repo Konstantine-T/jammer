@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  Box,
   Button,
   TextField,
   Typography,
@@ -14,6 +13,7 @@ import { useUser } from '../../context/user/userContext';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 
 const loginSchema = z.object({
   email: z
@@ -28,6 +28,7 @@ type LoginFormInputs = z.infer<typeof loginSchema>;
 const Login: React.FC = () => {
   const navigate = useNavigate();
   const { setUser } = useUser();
+  const { t } = useTranslation();
 
   const {
     control,
@@ -76,25 +77,19 @@ const Login: React.FC = () => {
           width: '100%',
           maxWidth: 400,
           textAlign: 'center',
-          backgroundColor: 'rgb(247, 247, 247)',
         }}
       >
         <Typography variant="h5" fontWeight="bold" gutterBottom>
-          Ready to Jam?
+          {t('ready')}
         </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit(onSubmit)}
-          noValidate
-          sx={{ mt: 2 }}
-        >
+        <form onSubmit={handleSubmit(onSubmit)} noValidate>
           <Controller
             name="email"
             control={control}
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Email"
+                label={t('email')}
                 variant="outlined"
                 margin="normal"
                 required
@@ -110,7 +105,7 @@ const Login: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Password"
+                label={t('password')}
                 variant="outlined"
                 margin="normal"
                 required
@@ -133,13 +128,13 @@ const Login: React.FC = () => {
               backgroundColor: 'rgb(209, 33, 33)',
             }}
           >
-            Sign In
+            {t('signIn')}
           </Button>
-        </Box>
+        </form>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-          New to Jammer?{' '}
+          {t('new')}{' '}
           <Link href="/register" variant="body2">
-            Create an account
+            {t('createAcc')}
           </Link>
         </Typography>
       </Paper>

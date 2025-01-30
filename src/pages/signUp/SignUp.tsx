@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslation } from 'react-i18next';
 
 const signUpSchema = z
   .object({
@@ -36,6 +37,7 @@ type SignUpFormInputs = z.infer<typeof signUpSchema>;
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const {
     control,
@@ -103,11 +105,10 @@ const SignUp: React.FC = () => {
           width: '100%',
           maxWidth: 400,
           textAlign: 'center',
-          backgroundColor: 'rgb(247, 247, 247)',
         }}
       >
         <Typography variant="h5" fontWeight="bold" gutterBottom>
-          Create Your Account
+          {t('createYour')}
         </Typography>
         <Box
           component="form"
@@ -121,7 +122,7 @@ const SignUp: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Username"
+                label={t('userName')}
                 variant="outlined"
                 margin="normal"
                 fullWidth
@@ -136,7 +137,7 @@ const SignUp: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Email"
+                label={t('email')}
                 variant="outlined"
                 margin="normal"
                 required
@@ -152,7 +153,7 @@ const SignUp: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Password"
+                label={t('password')}
                 variant="outlined"
                 margin="normal"
                 required
@@ -169,7 +170,7 @@ const SignUp: React.FC = () => {
             render={({ field }) => (
               <TextField
                 {...field}
-                label="Confirm Password"
+                label={t('confirmPass')}
                 variant="outlined"
                 margin="normal"
                 required
@@ -192,13 +193,13 @@ const SignUp: React.FC = () => {
               backgroundColor: 'rgb(209, 33, 33)',
             }}
           >
-            Sign Up
+            {t('signUp')}
           </Button>
         </Box>
         <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-          Already have an account?{' '}
+          {t('alreadyAcc')}{' '}
           <Link href="/login" variant="body2">
-            Log in
+            {t('login')}
           </Link>
         </Typography>
       </Paper>

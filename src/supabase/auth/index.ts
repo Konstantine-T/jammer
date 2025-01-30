@@ -67,7 +67,6 @@ export const login = async ({
       throw new Error(userError.message);
     }
 
-    // Combine authenticated user info with the user data from the table
     return {
       email: userData.email,
       username: userData.username,
@@ -77,4 +76,20 @@ export const login = async ({
   }
 
   throw new Error('User not found');
+};
+
+export const updateUsername = async (userId: string, newUsername: string) => {
+  try {
+    const { error } = await supabase
+      .from('users')
+      .update({ username: newUsername })
+      .eq('user_uuid', userId);
+
+    if (error) throw error;
+
+    return { success: true, message: 'Username updated successfully!' };
+  } catch (error) {
+    console.error('Error updating username:', error);
+    return { success: false, message: 'Failed to update username.' };
+  }
 };

@@ -4,7 +4,7 @@ import Intro from './components/Intro';
 import Features from './components/Features';
 import CardFooter from './components/CardFooter';
 
-const AboutUs = () => {
+const AboutUs: React.FC = () => {
   return (
     <Container
       maxWidth="md"
@@ -22,7 +22,6 @@ const AboutUs = () => {
         sx={{
           padding: 4,
           borderRadius: 2,
-          backgroundColor: 'rgb(247, 247, 247)',
         }}
       >
         <Intro />

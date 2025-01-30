@@ -5,20 +5,30 @@ import DefaultLayout from './components/layout/DefaultLayout';
 import HomePage from './pages/homePage';
 import UserProfile from './pages/userProfile';
 import AboutUs from './pages/about';
+import WritePost from './pages/writePost';
+import PostDetails from './pages/postDetails';
+import { ThemeContextProvider } from './context/theme/themeContext';
+import { LanguageProvider } from './context/language/languageContext';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DefaultLayout />}>
-          <Route path="/" element={<HomePage />}></Route>
-          <Route path="/login" element={<SignIn />}></Route>
-          <Route path="/register" element={<SignUp />}></Route>
-          <Route path="/profile" element={<UserProfile />}></Route>
-          <Route path="/about" element={<AboutUs />}></Route>
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ThemeContextProvider>
+      <LanguageProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<DefaultLayout />}>
+              <Route path="/" element={<HomePage />}></Route>
+              <Route path="/login" element={<SignIn />}></Route>
+              <Route path="/register" element={<SignUp />}></Route>
+              <Route path="/profile" element={<UserProfile />}></Route>
+              <Route path="/about" element={<AboutUs />}></Route>
+              <Route path="/write" element={<WritePost />}></Route>
+              <Route path="/post/:id" element={<PostDetails />}></Route>
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </LanguageProvider>
+    </ThemeContextProvider>
   );
 }
 

@@ -1,7 +1,6 @@
 import {
   Box,
   Typography,
-  Avatar,
   TextField,
   Button,
   Card,
@@ -10,33 +9,76 @@ import {
 import { useUser } from '../../context/user/userContext';
 import { useNavigate } from 'react-router-dom';
 import { Controller, useForm } from 'react-hook-form';
+import { useEffect } from 'react';
+import { updateUsername } from '../../supabase/auth';
+import { z } from 'zod';
+import { useTranslation } from 'react-i18next';
+import { useQuery } from '@tanstack/react-query';
+import { fetchPostsByUserEmail } from '../../supabase/posts';
+import PostCard from '../homePage/components/PostCard';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-interface ProfileFormValues {
-  userName: string;
-  phone: string;
+interface PostData {
+  post_title: string | null;
+  post_description: string | null;
+  date: string;
+  instruments: string[] | null;
+  genres: string[] | null;
+  userName: string | null;
+  user_email: string | null;
+  id: number;
 }
 
-const ProfilePage = () => {
+const profileSchema = z.object({
+  userName: z
+    .string()
+    .min(1, 'Username is required')
+    .max(30, 'Username cannot exceed 30 characters'),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
+
+const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const { user } = useUser();
   const navigate = useNavigate();
 
-  const { control, handleSubmit } = useForm<ProfileFormValues>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
     defaultValues: {
       userName: '',
-      phone: '',
     },
   });
 
-  if (!user) {
-    navigate('/login');
-  }
+  const { data: posts, isPending } = useQuery({
+    queryKey: ['userPosts', user?.id],
+    queryFn: () => fetchPostsByUserEmail(String(user?.email)),
+  });
 
-  const onSubmit = (data: ProfileFormValues) => {
-    console.log(data);
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [navigate, user]);
+
+  const onSubmit = async (data: ProfileFormValues) => {
+    if (!user) return;
+
+    const response = await updateUsername(String(user.id), data.userName);
+
+    if (response.success) {
+      alert('Username updated successfully!');
+    } else {
+      alert('Failed to update username.');
+    }
   };
 
   return (
-    <Box sx={{ p: 4, bgcolor: '#f9f9f9', minHeight: '100vh' }}>
+    <Box sx={{ p: 4, minHeight: '100vh' }}>
       <Box
         sx={{
           display: 'flex',
@@ -60,23 +102,12 @@ const ProfilePage = () => {
             }}
           >
             <CardContent>
-              <Avatar
-                sx={{
-                  height: 80,
-                  width: 80,
-                  mx: 'auto',
-                  mb: 2,
-                }}
-              />
               <Typography variant="h6">
                 {user?.username || 'Username'}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 {user?.email || 'user@example.com'}
               </Typography>
-              <Button variant="text" sx={{ mt: 2 }}>
-                Change Avatar
-              </Button>
             </CardContent>
           </Card>
         </Box>
@@ -98,39 +129,50 @@ const ProfilePage = () => {
                     label="Username"
                     type="text"
                     fullWidth
-                    defaultValue={user?.username || ''}
                     {...field}
+                    error={!!errors.userName}
+                    helperText={errors.userName?.message}
                   />
                 )}
               />
-
-              <Controller
-                name="phone"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    label="Phone Number"
-                    type="tel"
-                    fullWidth
-                    defaultValue={user?.id || ''}
-                    {...field}
-                  />
-                )}
-              />
+              <Button
+                variant="contained"
+                color="primary"
+                type="submit"
+                sx={{
+                  alignSelf: 'flex-end',
+                  backgroundColor: 'rgb(209, 33, 33)',
+                }}
+              >
+                {t('changeUserName')}
+              </Button>
             </Box>
-            <Button
-              variant="contained"
-              color="primary"
-              type="submit"
-              sx={{
-                alignSelf: 'flex-end',
-                backgroundColor: 'rgb(209, 33, 33)',
-              }}
-            >
-              Save Changes
-            </Button>
           </CardContent>
         </Card>
+      </Box>
+
+      <Box sx={{ mt: 5 }}>
+        <Typography variant="h5" gutterBottom>
+          {t('myPosts')}
+        </Typography>
+
+        {isPending ? (
+          <Typography>{t('loadingPosts')}</Typography>
+        ) : (
+          posts?.map((post: PostData) => (
+            <PostCard
+              key={post.id}
+              post_title={post.post_title}
+              post_description={post.post_description}
+              date={post.date}
+              instruments={post.instruments}
+              genres={post.genres}
+              userName={post.userName}
+              user_email={post.user_email}
+              id={post.id}
+            />
+          ))
+        )}
       </Box>
     </Box>
   );

@@ -9,31 +9,34 @@ import {
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import GroupIcon from '@mui/icons-material/Group';
 import PostAddIcon from '@mui/icons-material/PostAdd';
+import { useTranslation } from 'react-i18next';
 
-const Features = () => {
+const Features: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <Box sx={{ marginTop: 2 }}>
       <Typography variant="h6" fontWeight="bold" gutterBottom>
-        Features:
+        {t('aboutFeatures')}
       </Typography>
       <List>
         <ListItem>
           <ListItemIcon>
             <MusicNoteIcon color="primary" />
           </ListItemIcon>
-          <ListItemText primary="Create an account and share your musical interests." />
+          <ListItemText primary={t('aboutCreateAcc')} />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <GroupIcon color="secondary" />
           </ListItemIcon>
-          <ListItemText primary="Fill out the instruments you play and your favorite genres." />
+          <ListItemText primary={t('aboutFill')} />
         </ListItem>
         <ListItem>
           <ListItemIcon>
             <PostAddIcon color="success" />
           </ListItemIcon>
-          <ListItemText primary="Post when and where you want to jam and connect with other musicians." />
+          <ListItemText primary={t('aboutPost')} />
         </ListItem>
       </List>
     </Box>

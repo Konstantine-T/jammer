@@ -1,6 +1,9 @@
 import { Divider, Typography } from '@mui/material';
+import { useTranslation } from 'react-i18next';
 
-const Intro = () => {
+const Intro: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <>
       <Typography
@@ -9,14 +12,11 @@ const Intro = () => {
         textAlign="center"
         gutterBottom
       >
-        About Jammer
+        {t('aboutJam')}
       </Typography>
       <Divider sx={{ marginBottom: 3 }} />
       <Typography variant="body1" gutterBottom>
-        Welcome to our platform for musicians! Our mission is to bring musicians
-        together and make it easier to connect, collaborate, and create
-        beautiful music. Whether you're a beginner or a seasoned professional,
-        this is the perfect place to find your next jam buddy.
+        {t('aboutIntro')}
       </Typography>
     </>
   );
